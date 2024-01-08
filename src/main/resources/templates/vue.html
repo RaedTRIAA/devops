@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+<div class="text-end">
+    <span th:text="${#authentication.name}"></span>
+    <form method="post" th:action="@{/logout}">
+        <button type="submit" class="btn btn-danger">se deconnecter</button>
+    </form>
+
+</div>
+
+<a href="/admin/formproduit" class="btn btn-success fa fa-plus">Ajouter un nouveau produit</a>
+<div class="container">
+    <form th:action="@{/user/index}">
+    <div class="mx-2 my-2">
+
+            <label class="form-label" for="form1">Mot clé:</label>
+            <input type="text" id="form1" name="mc" th:value="${mc}"  />
+
+
+        <button type="submit" class="btn btn-primary fa fa-search" />
+
+
+    </div>
+    </form >
+    <div class="card">
+        <div class="card-header">
+            <h2>Liste des Produits</h2>
+        </div>
+        <div class="card-body">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Prix</th>
+                    <th>Quantite</th>
+                    <th>Categorie</th>
+                     <th>Actions</th>
+
+
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p:${produits}">
+                    <td th:if="${p.photo=='' || p.photo==null}">
+                        <img src="/photos/inconnu.jpg" width="60" height="60">
+                    </td>
+                    <td th:unless="${p.photo=='' || p.photo==null}">
+                        <img th:src="@{${'/photos/'+p.photo}}" width="60" height="60">
+                    </td>
+                    <td th:text="${p.id}"></td>
+                    <td th:text="${p.nom}"></td>
+                    <td th:text="${p.prix}"></td>
+                    <td th:text="${p.quantite}"></td>
+                    <td th:text="${p.categorie.nom}"></td>
+                    <td th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                        <a th:href="@{'/admin/delete/'+${p.id}}" class="btn btn-danger fa fa-trash"></a>
+                        <a th:href="@{'/admin/update/'+${p.id}}" class="btn btn-warning fa fa-edit"></a>
+
+                    </td>
+
+
+                </tr>
+                </tbody>
+
+
+            </table>
+            <ul class="nav nav-pills">
+                <li th:each="i,c:${pages}" >
+                    <a th:href="@{/user/index(mc=${mc},page=${c.index})}" th:text="${c.index+1}"
+                      th:class="${c.index==currentpage?'btn btn-primary mx-2':'btn btn-outline-primary mx-2'}"></a>
+
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
