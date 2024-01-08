@@ -9,8 +9,7 @@ RUN mvn package -DskipTests
 # 2nd Stage to add change
 FROM openjdk:17-slim
 WORKDIR /app
-COPY --from=build-stage /app/target/Bank-System-0.0.1-SNAPSHOT.jar /app/bank-server
-COPY wait-for-it.sh /app/wait-for-it.sh
-RUN chmod +x /app/wait-for-it.sh
+COPY --from=build-stage /app/target/<artifact> /app/devops-project
+
 EXPOSE 8081
-CMD ["/app/wait-for-it.sh", "db:3306", "--", "java", "-jar", "Bank-System-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "<artifact>"]
